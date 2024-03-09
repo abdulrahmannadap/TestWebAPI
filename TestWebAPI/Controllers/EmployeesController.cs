@@ -44,5 +44,20 @@ namespace TestWebAPI.Controllers
 
             return Ok(employee);
         }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Employee))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Employee))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Employee))]
+        public IActionResult Create(EmployeeDto employeeDto)
+        {
+            Employee employeeAdd = new() { Name = employeeDto.Name, Salary = employeeDto.Salary, UAN = employeeDto.UAN, CareatedDate = DateTime.UtcNow };
+
+            _context.Employees.Add(employeeAdd);
+            _context.SaveChanges();
+
+            employeeDto.Id = employeeAdd.Id;
+            return Ok(employeeDto);
+        }
     }
 }
