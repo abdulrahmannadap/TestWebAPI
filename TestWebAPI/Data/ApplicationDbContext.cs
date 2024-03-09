@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestWebAPI.Model;
+using TestWebAPI.Model.DTO;
 
 namespace TestWebAPI.Data
 {
@@ -11,6 +12,8 @@ namespace TestWebAPI.Data
             
         }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeDto> EmployeeDtos { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

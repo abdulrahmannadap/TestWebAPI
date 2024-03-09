@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TestWebAPI.Data;
 using TestWebAPI.Model;
+using TestWebAPI.Model.DTO;
 
 namespace TestWebAPI.Controllers
 {
@@ -15,13 +16,19 @@ namespace TestWebAPI.Controllers
             _context = context;
         }
         [HttpGet]
-        public IActionResult  Get()
+        public IActionResult Get()
         {
             IEnumerable<Employee> employees = _context.Employees;
-            return View(employees);
+
+            var employeeDto = employees.Select(e => new EmployeeDto { Id = e.Id, Name = e.Name, Salary = e.Salary, UAN = e.UAN });
+
+            return Ok(employeeDto);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest,Type = typeof(EmployeeDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(EmployeeDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         public IActionResult Get(int id) 
         {
             if(id==0)
@@ -29,7 +36,13 @@ namespace TestWebAPI.Controllers
                 return NotFound();
             }
             Employee employee = _context.Employees.SingleOrDefault(e => e.Id == id);
-            return View(employee);
+            if(employee==null)
+            {
+                return BadRequest();
+            }
+            EmployeeDto employeeDto = new() { Id=employee.Id,Name=employee.Name, UAN=employee.UAN,Salary=employee.Salary };
+
+            return Ok(employee);
         }
     }
 }
